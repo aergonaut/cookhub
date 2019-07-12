@@ -1,0 +1,10 @@
+[package]
+name = "cookhub"
+version = "0.1.0"
+authors = ["Chris Fung <aergonaut@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rocket = "0.4.2"
+juniper = "0.12"
+juniper_rocket = "0.3.0"
