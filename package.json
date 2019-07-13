@@ -1,0 +1,29 @@
+{
+  "name": "cookhub",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "https://github.com/aergonaut/cookhub.git",
+  "author": "Chris Fung <aergonaut@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "volta": {
+    "node": "10.16.0",
+    "yarn": "1.16.0"
+  },
+  "scripts": {
+    "dev": "yarn run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "yarn run development -- --watch",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "yarn run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "laravel-mix": "^4.1.2",
+    "resolve-url-loader": "3.1.0",
+    "sass": "^1.22.4",
+    "sass-loader": "7.*",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
