@@ -1,4 +1,7 @@
+//! Cookhub application entrypoint
+
 #![feature(proc_macro_hygiene, decl_macro)]
+#![deny(missing_docs, unsafe_code, clippy::missing_docs_in_private_items)]
 
 use rocket::response::content;
 use rocket::State;
@@ -10,11 +13,13 @@ use std::io::BufReader;
 
 mod graphql;
 
+/// GET handler to serve GraphiQL
 #[rocket::get("/graphiql")]
 fn graphiql() -> content::Html<String> {
     juniper_rocket::graphiql_source("/graphql")
 }
 
+/// POST handler for GraphQL requests
 #[rocket::post("/graphql", data = "<request>")]
 fn graphql_query(
     request: juniper_rocket::GraphQLRequest,
@@ -23,6 +28,7 @@ fn graphql_query(
     request.execute(&schema, &())
 }
 
+/// GET handler for root path
 #[rocket::get("/")]
 fn index() -> Template {
     let mut context = HashMap::new();
@@ -30,6 +36,7 @@ fn index() -> Template {
     Template::render("index", context)
 }
 
+/// Factory function to create the `asset_path` helper function for Tera templates.
 fn make_asset_path_function(manifest: HashMap<String, String>) -> t::GlobalFn {
     Box::new(move |args| -> t::Result<t::Value> {
         match args.get("name") {
@@ -42,6 +49,8 @@ fn make_asset_path_function(manifest: HashMap<String, String>) -> t::GlobalFn {
     })
 }
 
+/// The main function's responsibility is to instantiate the Rocket instance and attach all of the
+/// route handlers, state, middleware, etc.
 fn main() {
     rocket::ignite()
         .manage(graphql::Schema::new(
