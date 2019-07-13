@@ -5,13 +5,13 @@
 
 use rocket::response::content;
 use rocket::State;
-use rocket_contrib::templates::tera as t;
 use rocket_contrib::templates::{Engines, Template};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 
 mod graphql;
+mod helpers;
 
 /// GET handler to serve GraphiQL
 #[rocket::get("/graphiql")]
@@ -36,19 +36,6 @@ fn index() -> Template {
     Template::render("index", context)
 }
 
-/// Factory function to create the `asset_path` helper function for Tera templates.
-fn make_asset_path_function(manifest: HashMap<String, String>) -> t::GlobalFn {
-    Box::new(move |args| -> t::Result<t::Value> {
-        match args.get("name") {
-            Some(val) => match t::from_value::<String>(val.clone()) {
-                Ok(name) => Ok(t::to_value(manifest.get(&name).unwrap()).unwrap()),
-                Err(_) => Err("oops".into()),
-            },
-            None => Err("oops".into()),
-        }
-    })
-}
-
 /// The main function's responsibility is to instantiate the Rocket instance and attach all of the
 /// route handlers, state, middleware, etc.
 fn main() {
@@ -64,7 +51,7 @@ fn main() {
 
             engines
                 .tera
-                .register_function("asset_path", make_asset_path_function(manifest))
+                .register_function("asset_path", helpers::make_asset_path_function(manifest))
         }))
         .mount("/", rocket_contrib::serve::StaticFiles::from("public"))
         .mount("/", rocket::routes![index, graphiql, graphql_query])
