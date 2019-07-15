@@ -3,6 +3,9 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #![deny(missing_docs, unsafe_code, clippy::missing_docs_in_private_items)]
 
+#[macro_use]
+extern crate diesel;
+
 use crate::errors::Result;
 use rocket::response::content;
 use rocket::State;
@@ -12,9 +15,13 @@ use std::fs::File;
 use std::io::BufReader;
 
 mod config;
+mod db;
 mod errors;
 mod graphql;
 mod helpers;
+mod models;
+#[allow(missing_docs)]
+mod schema;
 
 /// GET handler to serve GraphiQL
 #[rocket::get("/graphiql")]
@@ -27,8 +34,12 @@ fn graphiql() -> content::Html<String> {
 fn graphql_query(
     request: juniper_rocket::GraphQLRequest,
     schema: State<graphql::Schema>,
+    db_pool: State<db::PgConnectionPool>,
 ) -> juniper_rocket::GraphQLResponse {
-    request.execute(&schema, &())
+    let context = graphql::Context {
+        db: db_pool.clone(),
+    };
+    request.execute(&schema, &context)
 }
 
 /// GET handler for root path
@@ -47,6 +58,9 @@ fn main() -> Result<()> {
     let config = config::make_config()?;
 
     rocket::custom(config)
+        .manage(db::establish_connection_pool(&std::env::var(
+            "DATABASE_URL",
+        )?)?)
         .manage(graphql::Schema::new(
             graphql::Query,
             juniper::EmptyMutation::new(),
