@@ -3,6 +3,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #![deny(missing_docs, unsafe_code, clippy::missing_docs_in_private_items)]
 
+use crate::errors::Result;
 use rocket::response::content;
 use rocket::State;
 use rocket_contrib::templates::{Engines, Template};
@@ -10,6 +11,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 
+mod config;
+mod errors;
 mod graphql;
 mod helpers;
 
@@ -38,8 +41,12 @@ fn index() -> Template {
 
 /// The main function's responsibility is to instantiate the Rocket instance and attach all of the
 /// route handlers, state, middleware, etc.
-fn main() {
-    rocket::ignite()
+fn main() -> Result<()> {
+    dotenv::from_filename(&config::env_file()?)?;
+
+    let config = config::make_config()?;
+
+    rocket::custom(config)
         .manage(graphql::Schema::new(
             graphql::Query,
             juniper::EmptyMutation::new(),
@@ -56,4 +63,6 @@ fn main() {
         .mount("/", rocket_contrib::serve::StaticFiles::from("public"))
         .mount("/", rocket::routes![index, graphiql, graphql_query])
         .launch();
+
+    Ok(())
 }
