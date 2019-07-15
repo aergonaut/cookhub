@@ -12,7 +12,7 @@ impl Query {
         let conn = &*context.db.get()?;
         match Recipe::with_limit(conn, 100) {
             Ok(results) => Ok(results),
-            Err(e) => Err(e.to_string())?,
+            Err(e) => Err(e)?,
         }
     }
 }
