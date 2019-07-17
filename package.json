@@ -11,11 +11,11 @@
     "yarn": "1.16.0"
   },
   "scripts": {
-    "assets:dev": "yarn run development",
+    "assets:dev": "yarn run assets:development",
     "assets:development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "assets:watch": "yarn run development -- --watch",
+    "assets:watch": "yarn run assets:development -- --watch",
     "assets:hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "assets:prod": "yarn run production",
+    "assets:prod": "yarn run assets:production",
     "assets:production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
@@ -33,7 +33,10 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
+    "apollo-boost": "^0.4.3",
+    "graphql": "^14.4.2",
     "react": "^16.8.6",
+    "react-apollo": "^2.5.8",
     "react-dom": "^16.8.6"
   }
 }
