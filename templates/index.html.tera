@@ -1,4 +1,5 @@
 {% extends "layouts/application" %}
 {% block body %}
   <h1>{{ title }}</h1>
+  <div id="mount"></div>
 {% endblock content %}
