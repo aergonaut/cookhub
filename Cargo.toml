@@ -15,6 +15,7 @@ serde_json = "1.0"
 failure = "0.1.5"
 uuid = { version = "0.7", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
+webpage = "1.0"
 
 [dependencies.rocket_contrib]
 version = "0.4.2"

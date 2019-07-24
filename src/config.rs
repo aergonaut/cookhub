@@ -5,6 +5,8 @@ use rocket::config::{Config, Environment};
 
 /// Generate Rocket configuration object by reading canonical environment variables
 pub fn make_config() -> Result<Config> {
+    let address = "0.0.0.0";
+
     let port = std::env::var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())
@@ -16,6 +18,7 @@ pub fn make_config() -> Result<Config> {
         .unwrap_or(4);
 
     let config = Config::build(Environment::active()?)
+        .address(address.to_string())
         .port(port)
         .workers(workers)
         .finalize()?;

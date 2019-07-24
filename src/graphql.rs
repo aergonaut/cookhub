@@ -10,7 +10,7 @@ pub struct Query;
 impl Query {
     fn recipes(context: &Context) -> FieldResult<Vec<Recipe>> {
         let conn = &*context.db.get()?;
-        match Recipe::with_limit(conn, 100) {
+        match RecipeRepo::with_limit(conn, 100) {
             Ok(results) => Ok(results),
             Err(e) => Err(e)?,
         }
