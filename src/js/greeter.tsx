@@ -35,7 +35,7 @@ export default function App() {
         <Heading is="h1">Cookhub</Heading>
       </Pane>
       <Pane width={1024} margin="auto" padding={majorScale(2)}>
-        <Query<RecipesQuery, {}> query={RECIPES_QUERY}>
+        <Query<RecipesQuery> query={RECIPES_QUERY}>
           {({ loading, error, data }) => {
             if (loading) return <Text>Loading...</Text>;
             if (error) return <Text>Error...</Text>;
